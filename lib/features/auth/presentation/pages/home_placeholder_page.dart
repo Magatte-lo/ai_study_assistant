@@ -2,13 +2,44 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/services/ai_provider.dart';
 import '../providers/auth_provider.dart';
 
-class HomePlaceholderPage extends ConsumerWidget {
+class HomePlaceholderPage extends ConsumerStatefulWidget {
   const HomePlaceholderPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomePlaceholderPage> createState() =>
+      _HomePlaceholderPageState();
+}
+
+class _HomePlaceholderPageState extends ConsumerState<HomePlaceholderPage> {
+  String? _aiResponse;
+  bool _isLoading = false;
+
+  Future<void> _testAI() async {
+    setState(() {
+      _isLoading = true;
+      _aiResponse = null;
+    });
+
+    try {
+      final aiService = ref.read(aiServiceProvider);
+      final response = await aiService.generateText(
+        'Dis bonjour en 1 phrase amusante. Réponds en français.',
+      );
+      if (!mounted) return;
+      setState(() => _aiResponse = response);
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _aiResponse = '❌ Erreur : $e');
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final userAsync = ref.watch(authStateProvider);
     final authController = ref.read(authControllerProvider.notifier);
 
@@ -19,9 +50,7 @@ class HomePlaceholderPage extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.logout),
             tooltip: 'Déconnexion',
-            onPressed: () async {
-              await authController.signOut();
-            },
+            onPressed: () async => authController.signOut(),
           ),
         ],
       ),
@@ -32,7 +61,7 @@ class HomePlaceholderPage extends ConsumerWidget {
           if (user == null) {
             return const Center(child: Text('Pas d\'utilisateur connecté'));
           }
-          return Padding(
+          return SingleChildScrollView(
             padding: const EdgeInsets.all(AppConstants.paddingLarge),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,34 +75,94 @@ class HomePlaceholderPage extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Tu es connecté ! Les features arrivent bientôt :',
+                  'Tu es connecté ! Les features arrivent bientôt.',
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 const SizedBox(height: 24),
-                _featureTile(
-                  context,
-                  Icons.chat_bubble_outline,
-                  'Chat IA',
-                  'Pose des questions à ton tuteur IA',
+
+                // Bouton test IA (temporaire)
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.auto_awesome,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Test Gemini AI',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      ElevatedButton.icon(
+                        onPressed: _isLoading ? null : _testAI,
+                        icon: _isLoading
+                            ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                            : const Icon(Icons.send),
+                        label: Text(
+                          _isLoading ? 'En cours...' : 'Tester Gemini',
+                        ),
+                      ),
+                      if (_aiResponse != null) ...[
+                        const SizedBox(height: 12),
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(_aiResponse!),
+                        ),
+                      ],
+                    ],
+                  ),
                 ),
-                _featureTile(
-                  context,
-                  Icons.picture_as_pdf_outlined,
-                  'Résumé PDF',
-                  'Résume tes documents en un clic',
+
+                const SizedBox(height: 32),
+                Text(
+                  'Features à venir :',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-                _featureTile(
-                  context,
-                  Icons.quiz_outlined,
-                  'Quiz IA',
-                  'Génère des quiz personnalisés',
-                ),
-                _featureTile(
-                  context,
-                  Icons.history,
-                  'Historique',
-                  'Retrouve toutes tes sessions',
-                ),
+                const SizedBox(height: 8),
+                _featureTile(context, Icons.chat_bubble_outline, 'Chat IA',
+                    'Pose des questions à ton tuteur IA'),
+                _featureTile(context, Icons.picture_as_pdf_outlined,
+                    'Résumé PDF', 'Résume tes documents en un clic'),
+                _featureTile(context, Icons.quiz_outlined, 'Quiz IA',
+                    'Génère des quiz personnalisés'),
+                _featureTile(context, Icons.history, 'Historique',
+                    'Retrouve toutes tes sessions'),
               ],
             ),
           );
