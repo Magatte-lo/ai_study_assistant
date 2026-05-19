@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/services/ai_provider.dart';
+import '../../../auth/presentation/pages/chat_list_page.dart';
 import '../providers/auth_provider.dart';
 
 class HomePlaceholderPage extends ConsumerStatefulWidget {
@@ -75,12 +76,12 @@ class _HomePlaceholderPageState extends ConsumerState<HomePlaceholderPage> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Tu es connecté ! Les features arrivent bientôt.',
+                  'Bienvenue dans ton espace d\'étude IA.',
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 const SizedBox(height: 24),
 
-                // Bouton test IA (temporaire)
+                // ============ Bouton test IA (temporaire) ============
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
@@ -149,20 +150,67 @@ class _HomePlaceholderPageState extends ConsumerState<HomePlaceholderPage> {
 
                 const SizedBox(height: 32),
                 Text(
-                  'Features à venir :',
+                  'Features',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 8),
-                _featureTile(context, Icons.chat_bubble_outline, 'Chat IA',
-                    'Pose des questions à ton tuteur IA'),
-                _featureTile(context, Icons.picture_as_pdf_outlined,
-                    'Résumé PDF', 'Résume tes documents en un clic'),
-                _featureTile(context, Icons.quiz_outlined, 'Quiz IA',
-                    'Génère des quiz personnalisés'),
-                _featureTile(context, Icons.history, 'Historique',
-                    'Retrouve toutes tes sessions'),
+
+                // ============ Features ============
+                _featureTile(
+                  context,
+                  Icons.chat_bubble_outline,
+                  'Chat IA',
+                  'Pose des questions à ton tuteur IA',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const ChatListPage(),
+                      ),
+                    );
+                  },
+                ),
+                _featureTile(
+                  context,
+                  Icons.picture_as_pdf_outlined,
+                  'Résumé PDF',
+                  'Résume tes documents en un clic',
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Bientôt disponible (étape 7) 📄'),
+                      ),
+                    );
+                  },
+                ),
+                _featureTile(
+                  context,
+                  Icons.quiz_outlined,
+                  'Quiz IA',
+                  'Génère des quiz personnalisés',
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Bientôt disponible (étape 8) 🧠'),
+                      ),
+                    );
+                  },
+                ),
+                _featureTile(
+                  context,
+                  Icons.history,
+                  'Historique',
+                  'Retrouve toutes tes sessions',
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Bientôt disponible (étape 9) 📊'),
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
           );
@@ -175,8 +223,9 @@ class _HomePlaceholderPageState extends ConsumerState<HomePlaceholderPage> {
       BuildContext context,
       IconData icon,
       String title,
-      String subtitle,
-      ) {
+      String subtitle, {
+        VoidCallback? onTap,
+      }) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: ListTile(
@@ -188,6 +237,7 @@ class _HomePlaceholderPageState extends ConsumerState<HomePlaceholderPage> {
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
         subtitle: Text(subtitle),
         trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+        onTap: onTap,
       ),
     );
   }
