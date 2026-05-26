@@ -5,7 +5,7 @@ import '../../../../core/constants/app_constants.dart';
 import '../../../../core/services/ai_provider.dart';
 import '../../../auth/presentation/pages/chat_list_page.dart';
 import '../providers/auth_provider.dart';
-
+import '../../../pdf_summary/presentation/pages/pdf_summary_list_page.dart';
 class HomePlaceholderPage extends ConsumerStatefulWidget {
   const HomePlaceholderPage({super.key});
 
@@ -178,10 +178,9 @@ class _HomePlaceholderPageState extends ConsumerState<HomePlaceholderPage> {
                   'Résumé PDF',
                   'Résume tes documents en un clic',
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Bientôt disponible (étape 7) 📄'),
-                      ),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const PdfSummaryListPage()),
                     );
                   },
                 ),
