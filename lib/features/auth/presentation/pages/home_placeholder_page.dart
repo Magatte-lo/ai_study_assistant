@@ -6,6 +6,7 @@ import '../../../../core/services/ai_provider.dart';
 import '../../../auth/presentation/pages/chat_list_page.dart';
 import '../providers/auth_provider.dart';
 import '../../../pdf_summary/presentation/pages/pdf_summary_list_page.dart';
+import '../../../history/presentation/pages/history_page.dart';
 class HomePlaceholderPage extends ConsumerStatefulWidget {
   const HomePlaceholderPage({super.key});
 
@@ -202,10 +203,9 @@ class _HomePlaceholderPageState extends ConsumerState<HomePlaceholderPage> {
                   'Historique',
                   'Retrouve toutes tes sessions',
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Bientôt disponible (étape 9) 📊'),
-                      ),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const HistoryPage()),
                     );
                   },
                 ),
