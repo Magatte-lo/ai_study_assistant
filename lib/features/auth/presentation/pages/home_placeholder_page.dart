@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import '../../../quiz/presentation/pages/quiz_list_page.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/services/ai_provider.dart';
 import '../../../auth/presentation/pages/chat_list_page.dart';
@@ -190,10 +190,9 @@ class _HomePlaceholderPageState extends ConsumerState<HomePlaceholderPage> {
                   'Quiz IA',
                   'Génère des quiz personnalisés',
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Bientôt disponible (étape 8) 🧠'),
-                      ),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const QuizListPage()),
                     );
                   },
                 ),
