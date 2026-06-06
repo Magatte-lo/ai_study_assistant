@@ -10,7 +10,7 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Charge les variables d'environnement depuis .env
+  // Charge les variables d'environnement
   await dotenv.load(fileName: '.env');
 
   // Initialise Firebase
@@ -18,7 +18,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Active le cache Firestore (utile en offline)
+  // Configuration Firestore optimisée pour émulateur
   FirebaseFirestore.instance.settings = const Settings(
     persistenceEnabled: true,
     cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
