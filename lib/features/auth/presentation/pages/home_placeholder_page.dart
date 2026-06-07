@@ -104,7 +104,7 @@ class HomePlaceholderPage extends ConsumerWidget {
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
                     Text(
-                      'Fonctionnalités',
+                      '',
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
